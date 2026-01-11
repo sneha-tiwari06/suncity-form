@@ -278,7 +278,7 @@ export default function PreviewPage() {
               {/* Son/Wife/Daughter of. - Second field - 20 boxes */}
               <div className="flex items-center" style={{ gap: `${FIELD_GAP}px` }}>
                 <label className="font-bold text-gray-900 flex-shrink-0" style={{ fontSize: '9px', fontWeight: 'bold', minWidth: `${LABEL_WIDTH}px` }}>
-                  Son/Wife/Daughter of.
+                  {applicant.relation || ''}
                 </label>
                 {renderCharacterBoxes(applicant.sonWifeDaughterOf || '', 20, BOX_WIDTH)}
               </div>

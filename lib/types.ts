@@ -4,6 +4,7 @@ export interface ApplicantData {
   // Personal Details
   title?: string; // Mr./Mrs./Ms./M/s.
   name?: string;
+  relation?: string; // Son/Wife/Daughter of
   sonWifeDaughterOf?: string; // Son/Wife/Daughter of
   nationality?: string;
   age?: string;

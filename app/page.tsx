@@ -7,6 +7,7 @@ import { FormData, ApplicantData } from '@/lib/types';
 const initialApplicant: ApplicantData = {
   title: '',
   name: '',
+  relation: '',
   sonWifeDaughterOf: '',
   nationality: '',
   age: '',

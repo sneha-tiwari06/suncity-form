@@ -19,6 +19,7 @@ interface DynamicFormViewerProps {
 const initialApplicant: ApplicantData = {
   title: '',
   name: '',
+  relation: '',
   sonWifeDaughterOf: '',
   nationality: '',
   age: '',

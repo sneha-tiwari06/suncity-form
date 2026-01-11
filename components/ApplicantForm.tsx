@@ -105,10 +105,7 @@ export default function ApplicantForm({
         {/* Left Column - Form Fields */}
         <div className="md:col-span-2 space-y-4">
           {/* Title */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Mr./Mrs./Ms./M/s. <span className="text-red-500">*</span>
-            </label>
+          <div>            
             <select
               value={data.title || ''}
               onChange={(e) => handleFieldChange('title', e.target.value)}
@@ -144,9 +141,20 @@ export default function ApplicantForm({
 
           {/* Son/Wife/Daughter of */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Son/Wife/Daughter of <span className="text-red-500">*</span>
-            </label>
+          <select
+              value={data.relation || ''}
+              onChange={(e) => handleFieldChange('relation', e.target.value)}
+              className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                errors.relation ? 'border-red-500' : 'border-gray-300'
+              }`}
+            >
+              <option value="">Select Relation</option>
+              <option value="son">Son of</option>
+              <option value="daughter">Daughter of</option>
+              <option value="wife">Wife of</option>
+            </select>
+            </div>
+            <div>
             <input
               type="text"
               value={data.sonWifeDaughterOf || ''}
