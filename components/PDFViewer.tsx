@@ -3,8 +3,7 @@
 import { Document, Page } from 'react-pdf';
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import 'react-pdf/dist/esm/Page/TextLayer.css';
-import { useState, useCallback } from 'react';
-import { useResizeObserver } from 'react-pdf';
+import { useState } from 'react';
 import '@/lib/pdfjs-worker'; // Configure PDF.js worker
 
 interface PDFViewerProps {
@@ -23,20 +22,6 @@ export default function PDFViewer({
   showOnlyFillable = false,
 }: PDFViewerProps) {
   const [numPages, setNumPages] = useState<number>(0);
-  const [containerRef, setContainerRef] = useState<HTMLDivElement | null>(null);
-  const [containerWidth, setContainerWidth] = useState<number>();
-
-  const onResize = useCallback((entries: ResizeObserverEntry[]) => {
-    const [entry] = entries;
-    if (entry) {
-      setContainerWidth(entry.contentRect.width);
-    }
-  }, []);
-
-  useResizeObserver({
-    ref: containerRef,
-    onResize,
-  });
 
   function onDocumentLoadSuccess({ numPages }: { numPages: number }) {
     setNumPages(numPages);
@@ -48,7 +33,7 @@ export default function PDFViewer({
 
   return (
     <div className="w-full">
-      <div ref={setContainerRef} className="w-full">
+      <div className="w-full flex flex-col items-center">
         <Document
           file={pdfUrl}
           onLoadSuccess={onDocumentLoadSuccess}
@@ -70,12 +55,11 @@ export default function PDFViewer({
             return (
               <div
                 key={`page_${pageNumber}`}
-                className="mb-4 relative"
-                style={{ width: containerWidth }}
+                className="mb-4 relative inline-block"
               >
                 <Page
                   pageNumber={pageNumber}
-                  width={containerWidth ? Math.min(containerWidth, 612) : 612}
+                  scale={1}
                   renderTextLayer={false}
                   renderAnnotationLayer={false}
                   className="border border-gray-300 shadow-lg"

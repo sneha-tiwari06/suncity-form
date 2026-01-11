@@ -1,5 +1,10 @@
 import mongoose, { Schema, Document, Model } from 'mongoose';
 
+// Ensure mongoose.models exists (important for Next.js build/runtime)
+if (typeof mongoose.models === 'undefined') {
+  (mongoose as any).models = {};
+}
+
 export interface IApplication extends Document {
   formData: string; // JSON string of form data
   pdfPath?: string; // Path to PDF file in filesystem (instead of buffer to avoid 16MB limit)
@@ -42,7 +47,19 @@ const ApplicationSchema: Schema = new Schema(
 // Create index for faster queries
 ApplicationSchema.index({ createdAt: -1 });
 
-const Application: Model<IApplication> =
-  mongoose.models.Application || mongoose.model<IApplication>('Application', ApplicationSchema);
+// Safely check for existing model or create new one
+let Application: Model<IApplication>;
+try {
+  // Check if model already exists
+  if (mongoose.models && mongoose.models.Application) {
+    Application = mongoose.models.Application as Model<IApplication>;
+  } else {
+    // Create new model
+    Application = mongoose.model<IApplication>('Application', ApplicationSchema);
+  }
+} catch (error) {
+  // Fallback: always create new model if check fails
+  Application = mongoose.model<IApplication>('Application', ApplicationSchema);
+}
 
 export default Application;

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { Document, Page } from 'react-pdf';
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import 'react-pdf/dist/esm/Page/TextLayer.css';
@@ -14,17 +15,62 @@ interface Application {
   bhkType: string | null;
 }
 
+interface User {
+  id: string;
+  username: string;
+  email: string;
+  role: string;
+}
+
 export default function AdminDashboard() {
+  const router = useRouter();
   const [applications, setApplications] = useState<Application[]>([]);
   const [loading, setLoading] = useState(true);
+  const [authLoading, setAuthLoading] = useState(true);
+  const [user, setUser] = useState<User | null>(null);
   const [selectedApplication, setSelectedApplication] = useState<string | null>(null);
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
   const [numPages, setNumPages] = useState<number>(0);
   const [pageNumber, setPageNumber] = useState(1);
 
   useEffect(() => {
-    fetchApplications();
+    checkAuth();
   }, []);
+
+  useEffect(() => {
+    if (user) {
+      fetchApplications();
+    }
+  }, [user]);
+
+  const checkAuth = async () => {
+    try {
+      const response = await fetch('/api/auth/me');
+      const result = await response.json();
+
+      if (response.ok && result.success) {
+        setUser(result.user);
+      } else {
+        router.push('/login?redirect=/admin');
+      }
+    } catch (error) {
+      console.error('Auth check error:', error);
+      router.push('/login?redirect=/admin');
+    } finally {
+      setAuthLoading(false);
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+      router.push('/login');
+      router.refresh();
+    } catch (error) {
+      console.error('Logout error:', error);
+      router.push('/login');
+    }
+  };
 
   const fetchApplications = async () => {
     try {
@@ -90,10 +136,34 @@ export default function AdminDashboard() {
     setNumPages(numPages);
   };
 
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-gray-100 p-8 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <div className="text-lg">Verifying authentication...</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-gray-100 p-8 flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-lg text-red-600 mb-4">Not authenticated. Redirecting...</div>
+        </div>
+      </div>
+    );
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-100 p-8 flex items-center justify-center">
-        <div className="text-lg">Loading applications...</div>
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <div className="text-lg">Loading applications...</div>
+        </div>
       </div>
     );
   }
@@ -101,7 +171,24 @@ export default function AdminDashboard() {
   return (
     <div className="min-h-screen bg-gray-100 p-8">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-3xl font-bold mb-6">Admin Dashboard</h1>
+        {/* Header with Logout */}
+        <div className="flex justify-between items-center mb-6">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
+            <p className="text-sm text-gray-600 mt-1">
+              Welcome, <span className="font-semibold">{user.username}</span> ({user.email})
+            </p>
+          </div>
+          <button
+            onClick={handleLogout}
+            className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 font-semibold transition-colors flex items-center gap-2"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+            Logout
+          </button>
+        </div>
         
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Applications List */}

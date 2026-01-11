@@ -4,12 +4,13 @@ import Application from '@/models/Application';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectDB();
 
-    const application = await Application.findById(params.id)
+    const { id } = await params;
+    const application = await Application.findById(id)
       .select('formData applicantCount bhkType')
       .lean();
 
