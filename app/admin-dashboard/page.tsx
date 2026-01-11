@@ -79,8 +79,8 @@ export default function AdminDashboard() {
   };
 
   const handleViewApplication = (id: string) => {
-    // Open preview page with newly designed pages (5-8) and static pages
-    window.open(`/preview/${id}`, '_blank');
+    // Open PDF with HTML-generated pages in browser's native PDF viewer
+    window.open(`/api/applications/${id}/pdf-with-html`, '_blank');
   };
 
   const handleDownload = async (id: string) => {

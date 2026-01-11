@@ -166,52 +166,14 @@ export default function DynamicFormViewer({
           }
           options={documentOptions}
         >
-          {/* Render all pages - Forms replace pages 5, 6, 7 at correct position */}
+          {/* Render only fillable pages (5-8) - Forms replace pages 5, 6, 7, 8 */}
           {Array.from(new Array(numPages), (el, index) => {
             const pageNumber = index + 1;
             const displayWidth = getDisplayWidth();
 
-            // Render pages 1-4 normally
-            if (pageNumber < 5) {
-              return (
-                <div
-                  key={`page_${pageNumber}`}
-                  className="mb-6 relative flex justify-center w-full"
-                >
-                  <div
-                    className="relative shadow-xl bg-white rounded-lg border-2 border-gray-200"
-                    style={{
-                      maxWidth: `${displayWidth}px`,
-                      width: `${displayWidth}px`,
-                      overflow: 'hidden',
-                      margin: '0 auto',
-                    }}
-                  >
-                    <div className="absolute top-2 left-2 z-10 bg-black/70 backdrop-blur-sm text-white px-3 py-1.5 rounded-full text-xs font-semibold shadow-lg">
-                      Page {pageNumber} of {numPages}
-                    </div>
-                    <Page
-                      pageNumber={pageNumber}
-                          scale={1}
-                          width={612}
-                          renderTextLayer={false}
-                          renderAnnotationLayer={false}
-                      className="block"
-                      loading={
-                        <div className="flex items-center justify-center p-8 bg-gray-50 min-h-[600px]">
-                          <div className="text-center">
-                            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-2"></div>
-                            <div className="text-gray-400 text-sm">Loading page {pageNumber}...</div>
-                          </div>
-                        </div>
-                      }
-                      onLoadError={(error) => {
-                        console.error(`[PDF.js] Error loading page ${pageNumber}:`, error);
-                      }}
-                    />
-                  </div>
-                </div>
-              );
+            // Skip pages 1-4 and pages 9+ - only show fillable pages (5-8)
+            if (pageNumber < 5 || pageNumber > 8) {
+              return null;
             }
 
             // Page 5 - Replace with Applicant 1 Form
@@ -348,46 +310,8 @@ export default function DynamicFormViewer({
               );
             }
 
-            // Render pages 9+ normally
-            return (
-              <div
-                key={`page_${pageNumber}`}
-                className="mb-6 relative flex justify-center w-full"
-              >
-                <div
-                  className="relative shadow-xl bg-white rounded-lg border-2 border-gray-200"
-                  style={{
-                    maxWidth: `${displayWidth}px`,
-                    width: `${displayWidth}px`,
-                    overflow: 'hidden',
-                    margin: '0 auto',
-                  }}
-                >
-                  <div className="absolute top-2 left-2 z-10 bg-black/70 backdrop-blur-sm text-white px-3 py-1.5 rounded-full text-xs font-semibold shadow-lg">
-                    Page {pageNumber} of {numPages}
-                  </div>
-                  <Page
-                    pageNumber={pageNumber}
-                          scale={1}
-                          width={612}
-                          renderTextLayer={false}
-                          renderAnnotationLayer={false}
-                    className="block"
-                    loading={
-                      <div className="flex items-center justify-center p-8 bg-gray-50 min-h-[600px]">
-                        <div className="text-center">
-                          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-2"></div>
-                          <div className="text-gray-400 text-sm">Loading page {pageNumber}...</div>
-                        </div>
-                      </div>
-                    }
-                    onLoadError={(error) => {
-                      console.error(`[PDF.js] Error loading page ${pageNumber}:`, error);
-                    }}
-                  />
-                </div>
-              </div>
-            );
+            // This should never be reached since we return null for pages > 8 above
+            return null;
           })}
         </Document>
       </div>
