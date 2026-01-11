@@ -42,10 +42,10 @@
   
   /* Force exact dimensions for PDF pages */
   canvas {
-    width: 612px !important; /* A4 width in points (8.5" * 72) */
-    /* height: 792px !important; A4 height in points (11" * 72) */
-    max-width: 612px !important;
-    /* max-height: 792px !important; */
+    width: 210mm !important; /* A4 width in points (8.5" * 72) */
+    height: 280mm !important; /* A4 height in points (11" * 72) */
+    max-width: 210mm !important;
+    max-height: 280mm !important;
     page-break-after: always;
   }
 

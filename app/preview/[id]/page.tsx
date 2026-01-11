@@ -98,11 +98,11 @@ export default function PreviewPage() {
     if (!hasFirstSignature && !hasSecondSignature) return null;
 
     return (
-      <div className="mt-5 pt-3 border-t border-gray-400 flex items-start gap-10">
+      <div className="pt-3 flex items-start gap-10">
         {/* First Applicant Signature */}
         {hasFirstSignature && (
           <div>
-            <div className="mb-1 text-center">
+            <div className="mb-1">
               <span className="text-gray-700 italic" style={{ fontSize: '11px', fontStyle: 'italic' }}>
                 Sole/First Applicant
               </span>
@@ -112,7 +112,7 @@ export default function PreviewPage() {
                 Signature:
               </label>
             </div>
-            <div className="border-2 border-dashed border-red-500 bg-white flex items-center justify-center" style={{ width: '170px', height: '45px', borderWidth: '1.5px', borderColor: '#ef4444' }}>
+            <div className="border-2 border-dashed border-red-500 bg-white rounded-lg flex items-center justify-center" style={{ width: '170px', height: '45px', borderWidth: '1px', borderColor: '#ef4444' }}>
               <img
                 src={formData.applicants[0].signature}
                 alt="Signature"
@@ -135,7 +135,7 @@ export default function PreviewPage() {
                 Signature:
               </label>
             </div>
-            <div className="border-2 border-dashed border-red-500 bg-white flex items-center justify-center" style={{ width: '170px', height: '45px', borderWidth: '1.5px', borderColor: '#ef4444' }}>
+            <div className="border-2 border-dashed border-red-500 bg-white flex items-center justify-center" style={{ width: '170px', height: '45px', borderWidth: '1px', borderColor: '#ef4444' }}>
               <img
                 src={formData.applicants[1].signature}
                 alt="Second Applicant Signature"
@@ -149,26 +149,26 @@ export default function PreviewPage() {
   };
 
   // Render character boxes for a value - matches exact form UI (red outlined boxes)
-  // All fields should have exactly 20 boxes to match desired design
-  const renderCharacterBoxes = (value: string, boxCount: number = 20, boxWidth: number = 12) => {
-    const boxHeight = 24; // Fixed height
-    const borderWidth = 1.5; // Border width in px
+  // All fields should have exactly 16 boxes to match desired design
+  const renderCharacterBoxes = (value: string, boxCount: number = 16, boxWidth: number = 12) => {
+    const boxHeight = 20; // Fixed height
+    const borderWidth = 1; // Border width in px
     const totalWidth = (boxWidth + (borderWidth * 2)) * boxCount; // Total width including borders
 
     const chars = value ? value.toString().split('').slice(0, boxCount) : [];
 
     return (
       <div
-        className="flex gap-0 character-boxes-container"
+        className="flex flex-wrap character-boxes-container"
         style={{
-          width: `${totalWidth}px`,
-          maxWidth: `${totalWidth}px`,
-          minWidth: `${totalWidth}px`,
+          // width: `${totalWidth}px`,
+          // maxWidth: `${totalWidth}px`,
+          // minWidth: `${totalWidth}px`,
           overflow: 'hidden',
           display: 'flex',
-          flexDirection: 'row',
-          flexWrap: 'nowrap',
-          alignItems: 'center'
+          flexWrap: 'wrap',
+          alignItems: 'center',
+          gap: '1px',
         }}
       >
         {Array.from({ length: boxCount }, (_, i) => (
@@ -206,12 +206,12 @@ export default function PreviewPage() {
     // Fixed container width matching A4 PDF width (612px)
     // Calculate exact widths to prevent overflow - pixel perfect layout
     const CONTAINER_WIDTH = 612; // A4 width in pixels
-    const PADDING = 20; // Left and right padding
-    const PHOTO_WIDTH = 130; // Photo section width (fixed)
-    const GAP = 16; // Gap between fields and photo
-    const LABEL_WIDTH = 155; // Label column width (fixed)
+    const PADDING = 15; // Left and right padding
+    const PHOTO_WIDTH = 140; // Photo section width (fixed)
+    const GAP = 10; // Gap between fields and photo
+    const LABEL_WIDTH = 100; // Label column width (fixed)
     const FIELD_GAP = 10; // Gap between label and boxes
-    const BOXES_PER_FIELD = 20; // All fields use exactly 20 boxes as per desired design
+    const BOXES_PER_FIELD = 16; // All fields use exactly 16 boxes as per desired design
 
     // Calculate available width for boxes
     const CONTENT_WIDTH = CONTAINER_WIDTH - (PADDING * 2); // 572px total content width
@@ -263,73 +263,96 @@ export default function PreviewPage() {
           </div>
         </div>
 
-        <div className="flex gap-3 mb-3" style={{ paddingLeft: `${PADDING}px`, paddingRight: `${PADDING}px` }}>
+        <div className="flex flex-wrap gap-3 mb-3" style={{ paddingLeft: `${PADDING}px`, paddingRight: `${PADDING}px` }}>
           {/* Left Column - Form Fields */}
-          <div className="flex-1 space-y-1.5" style={{ minWidth: 0, maxWidth: `${CONTAINER_WIDTH - PHOTO_WIDTH - PADDING * 2 - GAP}px` }}>
-            {/* Mr./Mrs./Ms./M/s. - First field (includes name in desired design) - 20 boxes */}
-            <div className="flex items-center" style={{ gap: `${FIELD_GAP}px` }}>
-              <label className="font-bold text-gray-900 flex-shrink-0" style={{ fontSize: '9px', fontWeight: 'bold', width: `${LABEL_WIDTH}px` }}>
-                Mr./Mrs./Ms./M/s.
-              </label>
-              {renderCharacterBoxes(`${applicant.title || ''} ${applicant.name || ''}`.trim() || '', 20, BOX_WIDTH)}
+          <div className='flex gap-3'>
+            <div className="flex-1 space-y-1.5" style={{ minWidth: 0, maxWidth: `${CONTAINER_WIDTH - PHOTO_WIDTH - PADDING * 2 - GAP}px` }}>
+              {/* Mr./Mrs./Ms./M/s. - First field (includes name in desired design) - 20 boxes */}
+              <div className="flex items-center" style={{ gap: `${FIELD_GAP}px` }}>
+                <label className="font-bold text-gray-900 flex-shrink-0" style={{ fontSize: '9px', fontWeight: 'bold', minWidth: `${LABEL_WIDTH}px` }}>
+                  {applicant.title}
+                </label>
+                {renderCharacterBoxes(` ${applicant.name || ''}`.trim() || '', 15, BOX_WIDTH)}
+              </div>
+
+              {/* Son/Wife/Daughter of. - Second field - 20 boxes */}
+              <div className="flex items-center" style={{ gap: `${FIELD_GAP}px` }}>
+                <label className="font-bold text-gray-900 flex-shrink-0" style={{ fontSize: '9px', fontWeight: 'bold', minWidth: `${LABEL_WIDTH}px` }}>
+                  Son/Wife/Daughter of.
+                </label>
+                {renderCharacterBoxes(applicant.sonWifeDaughterOf || '', 20, BOX_WIDTH)}
+              </div>
+
+              {/* Nationality - Third field - 20 boxes */}
+              <div className="flex items-center" style={{ gap: `${FIELD_GAP}px` }}>
+                <label className="font-bold text-gray-900 flex-shrink-0" style={{ fontSize: '9px', fontWeight: 'bold', minWidth: `${LABEL_WIDTH}px` }}>
+                  Nationality:
+                </label>
+                {renderCharacterBoxes(applicant.nationality || '', 20, BOX_WIDTH)}
+              </div>
+
+              {/* Age - 20 boxes */}
+              <div className="flex items-center" style={{ gap: `${FIELD_GAP}px` }}>
+                <label className="font-bold text-gray-900 flex-shrink-0" style={{ fontSize: '9px', fontWeight: 'bold', minWidth: `${LABEL_WIDTH}px` }}>
+                  Age:
+                </label>
+                {renderCharacterBoxes(applicant.age || '', 20, BOX_WIDTH)}
+              </div>
+
+              {/* DOB - 20 boxes */}
+              <div className="flex items-center" style={{ gap: `${FIELD_GAP}px` }}>
+                <label className="font-bold text-gray-900 flex-shrink-0" style={{ fontSize: '9px', fontWeight: 'bold', minWidth: `${LABEL_WIDTH}px` }}>
+                  DOB:
+                </label>
+                {renderCharacterBoxes(applicant.dob || '', 20, BOX_WIDTH)}
+              </div>
+
+              {/* Profession - 20 boxes */}
+              <div className="flex items-center" style={{ gap: `${FIELD_GAP}px` }}>
+                <label className="font-bold text-gray-900 flex-shrink-0" style={{ fontSize: '9px', fontWeight: 'bold', minWidth: `${LABEL_WIDTH}px` }}>
+                  Profession:
+                </label>
+                {renderCharacterBoxes(applicant.profession || '', 20, BOX_WIDTH)}
+              </div>
+
+              {/* Aadhaar - 20 boxes */}
+              <div className="flex items-center" style={{ gap: `${FIELD_GAP}px` }}>
+                <label className="font-bold text-gray-900 flex-shrink-0" style={{ fontSize: '9px', fontWeight: 'bold', minWidth: `${LABEL_WIDTH}px` }}>
+                  Aadhar No.:
+                </label>
+                {renderCharacterBoxes(applicant.aadhaar || '', 20, BOX_WIDTH)}
+              </div>
             </div>
 
-            {/* Son/Wife/Daughter of. - Second field - 20 boxes */}
-            <div className="flex items-center" style={{ gap: `${FIELD_GAP}px` }}>
-              <label className="font-bold text-gray-900 flex-shrink-0" style={{ fontSize: '9px', fontWeight: 'bold', width: `${LABEL_WIDTH}px` }}>
-                Son/Wife/Daughter of.
-              </label>
-              {renderCharacterBoxes(applicant.sonWifeDaughterOf || '', 20, BOX_WIDTH)}
+            {/* Right Column - Photo - Fixed width, no overflow */}
+            <div className="" style={{ width: `${PHOTO_WIDTH}px` }}>
+              <div className="border-2 border-red-500 bg-white p-2" style={{ borderColor: '#ef4444', borderWidth: '1px', width: '100%' }}>
+                <div className="aspect-[3/4] bg-white border border-gray-400 flex items-center justify-center overflow-hidden" style={{ width: '100%', aspectRatio: '3/4', objectFit: 'contain' }}>
+                  {applicant.photograph ? (
+                    <img
+                      src={applicant.photograph}
+                      alt="Applicant Photo"
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <span className="text-gray-400 text-center px-1" style={{ fontSize: '8px' }}>
+                      Photo
+                    </span>
+                  )}
+                </div>
+              </div>
             </div>
+          </div>
 
-            {/* Nationality - Third field - 20 boxes */}
-            <div className="flex items-center" style={{ gap: `${FIELD_GAP}px` }}>
-              <label className="font-bold text-gray-900 flex-shrink-0" style={{ fontSize: '9px', fontWeight: 'bold', width: `${LABEL_WIDTH}px` }}>
-                Nationality:
-              </label>
-              {renderCharacterBoxes(applicant.nationality || '', 20, BOX_WIDTH)}
-            </div>
-
-            {/* Age - 20 boxes */}
-            <div className="flex items-center" style={{ gap: `${FIELD_GAP}px` }}>
-              <label className="font-bold text-gray-900 flex-shrink-0" style={{ fontSize: '9px', fontWeight: 'bold', width: `${LABEL_WIDTH}px` }}>
-                Age:
-              </label>
-              {renderCharacterBoxes(applicant.age || '', 20, BOX_WIDTH)}
-            </div>
-
-            {/* DOB - 20 boxes */}
-            <div className="flex items-center" style={{ gap: `${FIELD_GAP}px` }}>
-              <label className="font-bold text-gray-900 flex-shrink-0" style={{ fontSize: '9px', fontWeight: 'bold', width: `${LABEL_WIDTH}px` }}>
-                DOB:
-              </label>
-              {renderCharacterBoxes(applicant.dob || '', 20, BOX_WIDTH)}
-            </div>
-
-            {/* Profession - 20 boxes */}
-            <div className="flex items-center" style={{ gap: `${FIELD_GAP}px` }}>
-              <label className="font-bold text-gray-900 flex-shrink-0" style={{ fontSize: '9px', fontWeight: 'bold', width: `${LABEL_WIDTH}px` }}>
-                Profession:
-              </label>
-              {renderCharacterBoxes(applicant.profession || '', 20, BOX_WIDTH)}
-            </div>
-
-            {/* Aadhaar - 20 boxes */}
-            <div className="flex items-center" style={{ gap: `${FIELD_GAP}px` }}>
-              <label className="font-bold text-gray-900 flex-shrink-0" style={{ fontSize: '9px', fontWeight: 'bold', width: `${LABEL_WIDTH}px` }}>
-                Aadhar No.:
-              </label>
-              {renderCharacterBoxes(applicant.aadhaar || '', 20, BOX_WIDTH)}
-            </div>
-
+          <div>
             {/* Residential Status */}
             <div className="flex items-start mt-0.5" style={{ gap: `${FIELD_GAP}px` }}>
-              <label className="font-bold text-gray-900 flex-shrink-0 pt-1" style={{ fontSize: '9px', fontWeight: 'bold', width: `${LABEL_WIDTH}px` }}>
+              <label className="font-bold text-gray-900 flex-shrink-0 pt-1" style={{ fontSize: '9px', fontWeight: 'bold', minWidth: `${LABEL_WIDTH}px` }}>
                 Residential Status:
               </label>
               <div className="flex flex-row gap-0.5">
                 <label className="flex items-center gap-1.5">
-                  <div className={`w-3 h-3 border-2 ${applicant.residentialStatus === 'Resident' ? 'border-gray-900 bg-gray-900' : 'border-gray-700 bg-white'} flex items-center justify-center`} style={{ borderWidth: '1.5px' }}>
+                  <div className={`w-3 h-3 border-2 ${applicant.residentialStatus === 'Resident' ? 'border-gray-900 bg-gray-900' : 'border-gray-700 bg-white'} flex items-center justify-center`} style={{ borderWidth: '1px' }}>
                     {applicant.residentialStatus === 'Resident' && (
                       <span className="text-white font-bold" style={{ fontSize: '9px' }}>✓</span>
                     )}
@@ -337,7 +360,7 @@ export default function PreviewPage() {
                   <span className="text-gray-900 font-bold" style={{ fontSize: '9px', fontWeight: 'bold' }}>Resident</span>
                 </label>
                 <label className="flex items-center gap-1.5">
-                  <div className={`w-3 h-3 border-2 ${applicant.residentialStatus === 'Non-Resident' ? 'border-gray-900 bg-gray-900' : 'border-gray-700 bg-white'} flex items-center justify-center`} style={{ borderWidth: '1.5px' }}>
+                  <div className={`w-3 h-3 border-2 ${applicant.residentialStatus === 'Non-Resident' ? 'border-gray-900 bg-gray-900' : 'border-gray-700 bg-white'} flex items-center justify-center`} style={{ borderWidth: '1px' }}>
                     {applicant.residentialStatus === 'Non-Resident' && (
                       <span className="text-white font-bold" style={{ fontSize: '9px' }}>✓</span>
                     )}
@@ -345,7 +368,7 @@ export default function PreviewPage() {
                   <span className="text-gray-900 font-bold" style={{ fontSize: '9px', fontWeight: 'bold' }}>Non- Resident</span>
                 </label>
                 <label className="flex items-center gap-1.5">
-                  <div className={`w-3 h-3 border-2 ${applicant.residentialStatus === 'Foreign National of Indian Origin' ? 'border-gray-900 bg-gray-900' : 'border-gray-700 bg-white'} flex items-center justify-center`} style={{ borderWidth: '1.5px' }}>
+                  <div className={`w-3 h-3 border-2 ${applicant.residentialStatus === 'Foreign National of Indian Origin' ? 'border-gray-900 bg-gray-900' : 'border-gray-700 bg-white'} flex items-center justify-center`} style={{ borderWidth: '1px' }}>
                     {applicant.residentialStatus === 'Foreign National of Indian Origin' && (
                       <span className="text-white font-bold" style={{ fontSize: '9px' }}>✓</span>
                     )}
@@ -357,7 +380,7 @@ export default function PreviewPage() {
 
             {/* PAN - 20 boxes */}
             <div className="flex items-center" style={{ gap: `${FIELD_GAP}px` }}>
-              <label className="font-bold text-gray-900 flex-shrink-0" style={{ fontSize: '9px', fontWeight: 'bold', width: `${LABEL_WIDTH}px` }}>
+              <label className="font-bold text-gray-900 flex-shrink-0" style={{ fontSize: '9px', fontWeight: 'bold', minWidth: `${LABEL_WIDTH}px` }}>
                 Income Tax Permanent Account No.:
               </label>
               {renderCharacterBoxes(applicant.pan || '', 20, BOX_WIDTH)}
@@ -365,7 +388,7 @@ export default function PreviewPage() {
 
             {/* IT Ward - 2 rows of 20 boxes each */}
             <div className="flex items-start" style={{ gap: `${FIELD_GAP}px` }}>
-              <label className="font-bold text-gray-900 flex-shrink-0 pt-1 leading-tight" style={{ fontSize: '9px', fontWeight: 'bold', lineHeight: '1.25', width: `${LABEL_WIDTH}px` }}>
+              <label className="font-bold text-gray-900 flex-shrink-0 pt-1 leading-tight" style={{ fontSize: '9px', fontWeight: 'bold', lineHeight: '1.25', minWidth: `${LABEL_WIDTH}px` }}>
                 Ward / Circle / Special Range / Place, where assessed to income tax:
               </label>
               <div className="flex flex-col space-y-0.5">
@@ -383,7 +406,7 @@ export default function PreviewPage() {
 
             {/* Correspondence Address - 3 rows of 20 boxes each */}
             <div className="flex items-start" style={{ gap: `${FIELD_GAP}px` }}>
-              <label className="font-bold text-gray-900 flex-shrink-0 pt-1" style={{ fontSize: '9px', fontWeight: 'bold', width: `${LABEL_WIDTH}px` }}>
+              <label className="font-bold text-gray-900 flex-shrink-0 pt-1" style={{ fontSize: '9px', fontWeight: 'bold', minWidth: `${LABEL_WIDTH}px` }}>
                 Correspondence Address:
               </label>
               <div className="flex flex-col space-y-0.5">
@@ -401,7 +424,7 @@ export default function PreviewPage() {
 
             {/* Tel No. - 20 boxes */}
             <div className="flex items-center" style={{ gap: `${FIELD_GAP}px` }}>
-              <label className="font-bold text-gray-900 flex-shrink-0" style={{ fontSize: '9px', fontWeight: 'bold', width: `${LABEL_WIDTH}px` }}>
+              <label className="font-bold text-gray-900 flex-shrink-0" style={{ fontSize: '9px', fontWeight: 'bold', minWidth: `${LABEL_WIDTH}px` }}>
                 Tel No.:
               </label>
               {renderCharacterBoxes(applicant.telNo || '', 20, BOX_WIDTH)}
@@ -409,7 +432,7 @@ export default function PreviewPage() {
 
             {/* Mobile - 20 boxes */}
             <div className="flex items-center" style={{ gap: `${FIELD_GAP}px` }}>
-              <label className="font-bold text-gray-900 flex-shrink-0" style={{ fontSize: '9px', fontWeight: 'bold', width: `${LABEL_WIDTH}px` }}>
+              <label className="font-bold text-gray-900 flex-shrink-0" style={{ fontSize: '9px', fontWeight: 'bold', minWidth: `${LABEL_WIDTH}px` }}>
                 Mobile:
               </label>
               {renderCharacterBoxes(applicant.phone || '', 20, BOX_WIDTH)}
@@ -417,32 +440,10 @@ export default function PreviewPage() {
 
             {/* Email - 20 boxes */}
             <div className="flex items-center" style={{ gap: `${FIELD_GAP}px` }}>
-              <label className="font-bold text-gray-900 flex-shrink-0" style={{ fontSize: '9px', fontWeight: 'bold', width: `${LABEL_WIDTH}px` }}>
+              <label className="font-bold text-gray-900 flex-shrink-0" style={{ fontSize: '9px', fontWeight: 'bold', minWidth: `${LABEL_WIDTH}px` }}>
                 E-Mail ID:
               </label>
               {renderCharacterBoxes(applicant.email || '', 20, BOX_WIDTH)}
-            </div>
-          </div>
-
-          {/* Right Column - Photo - Fixed width, no overflow */}
-          <div className="flex-shrink-0" style={{ width: `${PHOTO_WIDTH}px` }}>
-            <div className="border-2 border-red-500 bg-white p-2" style={{ borderColor: '#ef4444', borderWidth: '2px', width: '100%' }}>
-              <label className="block font-bold text-gray-900 text-center mb-1.5 uppercase tracking-wider" style={{ fontSize: '9px', fontWeight: 'bold', letterSpacing: '0.5px' }}>
-                AFFIX PHOTOGRAPH
-              </label>
-              <div className="aspect-[3/4] bg-white border border-gray-400 flex items-center justify-center overflow-hidden" style={{ width: '100%', aspectRatio: '3/4' }}>
-                {applicant.photograph ? (
-                  <img
-                    src={applicant.photograph}
-                    alt="Applicant Photo"
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <span className="text-gray-400 text-center px-1" style={{ fontSize: '8px' }}>
-                    Photo
-                  </span>
-                )}
-              </div>
             </div>
           </div>
         </div>
@@ -503,7 +504,7 @@ export default function PreviewPage() {
           <div className="flex-1 space-y-2.5" style={{ minWidth: 0 }}>
             {/* Tower */}
             <div className="flex items-center" style={{ gap: `${FIELD_GAP}px` }}>
-              <label className="font-bold text-gray-900 flex-shrink-0" style={{ fontSize: '11px', fontWeight: 'bold', width: `${LABEL_WIDTH}px` }}>
+              <label className="font-bold text-gray-900 flex-shrink-0" style={{ fontSize: '11px', fontWeight: 'bold', minWidth: `${LABEL_WIDTH}px` }}>
                 Tower
               </label>
               <div className="border-b border-gray-900" style={{ flex: 1, minWidth: '150px', height: '20px' }}>
@@ -513,7 +514,7 @@ export default function PreviewPage() {
 
             {/* Apartment Number */}
             <div className="flex items-center" style={{ gap: `${FIELD_GAP}px` }}>
-              <label className="font-bold text-gray-900 flex-shrink-0" style={{ fontSize: '11px', fontWeight: 'bold', width: `${LABEL_WIDTH}px` }}>
+              <label className="font-bold text-gray-900 flex-shrink-0" style={{ fontSize: '11px', fontWeight: 'bold', minWidth: `${LABEL_WIDTH}px` }}>
                 Apartment No.
               </label>
               <div className="border-b border-gray-900" style={{ flex: 1, minWidth: '150px', height: '20px' }}>
@@ -523,7 +524,7 @@ export default function PreviewPage() {
 
             {/* Type */}
             <div className="flex items-center" style={{ gap: `${FIELD_GAP}px` }}>
-              <label className="font-bold text-gray-900 flex-shrink-0" style={{ fontSize: '11px', fontWeight: 'bold', width: `${LABEL_WIDTH}px` }}>
+              <label className="font-bold text-gray-900 flex-shrink-0" style={{ fontSize: '11px', fontWeight: 'bold', minWidth: `${LABEL_WIDTH}px` }}>
                 Type
               </label>
               <div className="border-b border-gray-900" style={{ flex: 1, minWidth: '150px', height: '20px' }}>
@@ -533,7 +534,7 @@ export default function PreviewPage() {
 
             {/* Floor */}
             <div className="flex items-center" style={{ gap: `${FIELD_GAP}px` }}>
-              <label className="font-bold text-gray-900 flex-shrink-0" style={{ fontSize: '11px', fontWeight: 'bold', width: `${LABEL_WIDTH}px` }}>
+              <label className="font-bold text-gray-900 flex-shrink-0" style={{ fontSize: '11px', fontWeight: 'bold', minWidth: `${LABEL_WIDTH}px` }}>
                 Floor
               </label>
               <div className="border-b border-gray-900" style={{ flex: 1, minWidth: '150px', height: '20px' }}>
@@ -543,7 +544,7 @@ export default function PreviewPage() {
 
             {/* Carpet Area */}
             <div className="flex items-center" style={{ gap: `${FIELD_GAP}px` }}>
-              <label className="font-bold text-gray-900 flex-shrink-0" style={{ fontSize: '11px', fontWeight: 'bold', width: `${LABEL_WIDTH}px` }}>
+              <label className="font-bold text-gray-900 flex-shrink-0" style={{ fontSize: '11px', fontWeight: 'bold', minWidth: `${LABEL_WIDTH}px` }}>
                 Carpet Area:
               </label>
               <div className="flex items-center gap-2" style={{ flex: 1 }}>
@@ -560,7 +561,7 @@ export default function PreviewPage() {
 
             {/* Unit Price */}
             <div className="flex items-center" style={{ gap: `${FIELD_GAP}px` }}>
-              <label className="font-bold text-gray-900 flex-shrink-0" style={{ fontSize: '11px', fontWeight: 'bold', width: `${LABEL_WIDTH}px` }}>
+              <label className="font-bold text-gray-900 flex-shrink-0" style={{ fontSize: '11px', fontWeight: 'bold', minWidth: `${LABEL_WIDTH}px` }}>
                 Unit Price (in rupees)
               </label>
               <div className="border-b border-gray-900" style={{ flex: 1, minWidth: '150px', height: '20px' }}>
@@ -577,7 +578,7 @@ export default function PreviewPage() {
 
             {/* Total Price */}
             <div className="flex items-center mt-2" style={{ gap: `${FIELD_GAP}px` }}>
-              <label className="font-bold text-gray-900 flex-shrink-0" style={{ fontSize: '11px', fontWeight: 'bold', width: `${LABEL_WIDTH}px` }}>
+              <label className="font-bold text-gray-900 flex-shrink-0" style={{ fontSize: '11px', fontWeight: 'bold', minWidth: `${LABEL_WIDTH}px` }}>
                 Total Price (in rupees)
               </label>
               <div className="border-b border-gray-900" style={{ flex: 1, minWidth: '150px', height: '20px' }}>
