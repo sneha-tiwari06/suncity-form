@@ -162,9 +162,9 @@ export default function ApplicantForm({
               }`}
             >
               <option value="">Select Relation</option>
-              <option value="son">Son of</option>
-              <option value="daughter">Daughter of</option>
-              <option value="wife">Wife of</option>
+              <option value="Son of">Son of</option>
+              <option value="Daughter of">Daughter of</option>
+              <option value="Wife of">Wife of</option>
             </select>
             </div>
             <div>
@@ -202,7 +202,7 @@ export default function ApplicantForm({
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Age <span className="text-red-500">*</span>
+                Age(in years) <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
