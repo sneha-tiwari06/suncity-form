@@ -8,12 +8,16 @@ interface ApplicantFormProps {
   applicantNumber: number;
   data: ApplicantData;
   onChange: (data: ApplicantData) => void;
+  canRemove?: boolean;
+  onRemove?: () => void;
 }
 
 export default function ApplicantForm({
   applicantNumber,
   data,
   onChange,
+  canRemove = false,
+  onRemove,
 }: ApplicantFormProps) {
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
@@ -95,10 +99,19 @@ export default function ApplicantForm({
 
   return (
     <div className="mb-6 bg-white rounded-lg shadow-xl border-2 border-gray-200 p-6">
-      <div className="mb-4 pb-3 border-b-2 border-gray-300">
+      <div className="mb-4 pb-3 border-b-2 border-gray-300 flex justify-between items-center">
         <h2 className="text-xl font-bold text-gray-800">
           Applicant {applicantNumber} Details
         </h2>
+        {canRemove && onRemove && (
+          <button
+            type="button"
+            onClick={onRemove}
+            className="px-4 py-2 bg-red-500 text-white text-sm rounded-md hover:bg-red-600 transition-colors font-medium"
+          >
+            Remove Applicant
+          </button>
+        )}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

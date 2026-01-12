@@ -52,6 +52,11 @@ export default function DynamicFormViewer({
   const [containerWidth, setContainerWidth] = useState<number>(1200);
   const [applicantCount, setApplicantCount] = useState(1);
 
+  // Sync applicantCount with formData.applicants.length
+  useEffect(() => {
+    setApplicantCount(formData.applicants.length);
+  }, [formData.applicants.length]);
+
   // Use native ResizeObserver to track container width
   useEffect(() => {
     const container = containerRef.current;
@@ -115,6 +120,17 @@ export default function DynamicFormViewer({
       onFormDataChange({
         ...formData,
         applicants: newApplicants,
+      });
+    }
+  };
+
+  const handleRemoveApplicant = (index: number) => {
+    if (applicantCount > 1 && index > 0) {
+      const updatedApplicants = formData.applicants.filter((_, i) => i !== index);
+      setApplicantCount(applicantCount - 1);
+      onFormDataChange({
+        ...formData,
+        applicants: updatedApplicants,
       });
     }
   };
@@ -197,6 +213,7 @@ export default function DynamicFormViewer({
                         applicantNumber={1}
                         data={formData.applicants[0] || { ...initialApplicant }}
                         onChange={(data) => handleApplicantChange(0, data)}
+                        canRemove={false}
                       />
                       {applicantCount === 1 && (
                         <div className="mt-6 pt-4 border-t border-gray-300">
@@ -235,6 +252,8 @@ export default function DynamicFormViewer({
                           applicantNumber={2}
                           data={formData.applicants[1] || { ...initialApplicant }}
                           onChange={(data) => handleApplicantChange(1, data)}
+                          canRemove={true}
+                          onRemove={() => handleRemoveApplicant(1)}
                         />
                         {applicantCount === 2 && (
                           <div className="mt-6 pt-4 border-t border-gray-300">
@@ -275,6 +294,8 @@ export default function DynamicFormViewer({
                           applicantNumber={3}
                           data={formData.applicants[2] || { ...initialApplicant }}
                           onChange={(data) => handleApplicantChange(2, data)}
+                          canRemove={true}
+                          onRemove={() => handleRemoveApplicant(2)}
                         />
                       </div>
                     </div>

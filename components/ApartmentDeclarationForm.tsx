@@ -213,11 +213,11 @@ export default function ApartmentDeclarationForm({
                 }`}
               >
                 <option value="">Select Tower</option>
-                <option value="Tower A">Tower A</option>
-                <option value="Tower B">Tower B</option>
-                <option value="Tower C">Tower C</option>
-                <option value="Tower D">Tower D</option>
-                <option value="Tower E">Tower E</option>
+                <option value="Altair">Altair</option>
+                <option value="Crown">Crown</option>
+                <option value="Imperial">Imperial</option>
+                <option value="Majestic">Majestic</option>
+                <option value="Regalia">Regalia</option>
               </select>
               {errors.tower && <p className="mt-1 text-sm text-red-500">{errors.tower}</p>}
             </div>
